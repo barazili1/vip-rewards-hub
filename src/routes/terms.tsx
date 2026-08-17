@@ -177,6 +177,7 @@ function TermsPage() {
   const [userId, setUserId] = useState("");
   const [telegramUser, setTelegramUser] = useState("");
   const [dialog, setDialog] = useState<"closed" | "loading" | "done">("closed");
+  const navigate = useNavigate();
   const sendToBot = useServerFn(submitRegistration);
   const ready =
     userId.trim().length > 0 &&
