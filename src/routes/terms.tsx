@@ -190,31 +190,32 @@ function TermsPage() {
               title="التسجيل بالبروموكود"
               description="انسخ البروموكود واستخدمه أثناء التسجيل لربط حسابك بالتطبيق."
             >
-              <div className="flex items-center gap-4 rounded-2xl border border-dashed border-border bg-secondary/25 p-3">
-                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-border bg-card">
-                  <Ticket className="size-5 text-foreground" />
+              <div className="flex h-10 w-full items-center gap-3 rounded-[15px] border border-dashed border-border bg-secondary/25 px-2">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-border bg-card">
+                  <Ticket className="size-3.5 text-foreground" />
                 </span>
-                <div className="min-w-0 flex-1">
-                  <p className="font-display text-[10px] font-bold tracking-[0.3em] text-muted-foreground">
+                <div className="flex min-w-0 flex-1 items-baseline gap-2">
+                  <p className="font-display text-[9px] font-bold tracking-[0.25em] text-muted-foreground">
                     PROMOCODE
                   </p>
-                  <p className="font-display text-xl font-extrabold tracking-[0.18em] text-foreground">
+                  <p className="font-display text-sm font-extrabold tracking-[0.15em] text-foreground">
                     {PROMO}
                   </p>
                 </div>
                 <button
                   onClick={copyPromo}
                   aria-label="نسخ البرومو كود"
-                  className="flex items-center gap-2 rounded-xl px-2 py-2 font-display text-[11px] font-bold tracking-[0.2em] text-muted-foreground transition-colors hover:text-primary"
+                  className="flex items-center gap-1.5 px-1 font-display text-[10px] font-bold tracking-[0.15em] text-muted-foreground transition-colors hover:text-primary"
                 >
                   {copied ? "COPIED" : "COPY"}
                   {copied ? (
-                    <Check className="size-4" />
+                    <Check className="size-3.5" />
                   ) : (
-                    <Copy className="size-4" />
+                    <Copy className="size-3.5" />
                   )}
                 </button>
               </div>
+
 
               <button
                 onClick={() => toast("جاري تحويلك إلى صفحة التسجيل...")}
