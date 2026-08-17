@@ -10,7 +10,7 @@ export function TopBar({
   backTo?: string;
 }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-background/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b border-border bg-background/30 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-xl items-center justify-between px-5">
         <div className="flex items-center gap-3">
           {backTo ? (
@@ -26,7 +26,7 @@ export function TopBar({
         </div>
 
         {typeof usersOnline === "number" ? (
-          <div className="flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-3 py-1.5">
+          <div className="flex items-center gap-2 rounded-full border border-border bg-secondary/20 px-3 py-1.5">
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-70" />
               <span className="relative inline-flex size-2 rounded-full bg-accent" />
