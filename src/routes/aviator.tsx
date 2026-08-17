@@ -44,6 +44,7 @@ function AviatorPage() {
   }, [flying, round, target]);
 
   const startRound = () => {
+    console.log('startRound clicked');
     setTarget(1 + Math.random() * 6);
     setOdd(1);
     setRound((r) => r + 1);
