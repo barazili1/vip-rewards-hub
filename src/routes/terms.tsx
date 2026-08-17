@@ -1,6 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { submitRegistration } from "@/lib/telegram.functions";
+import {
+  submitRegistration,
+  verifyTelegramUser,
+} from "@/lib/telegram.functions";
 import { ADMIN_ID, grantAdmin } from "@/lib/session";
 import {
   BadgeCheck,
