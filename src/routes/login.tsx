@@ -136,6 +136,48 @@ function LoginPage() {
           DARK VIP © {new Date().getFullYear()}
         </p>
       </main>
+
+      {picker ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 px-6 backdrop-blur-md">
+          <div className="surface-card animate-rise relative w-full max-w-sm rounded-3xl p-6 text-center">
+            <button
+              onClick={() => setPicker(false)}
+              aria-label="إغلاق"
+              className="absolute left-4 top-4 flex size-8 items-center justify-center rounded-full border border-border text-muted-foreground"
+            >
+              <X className="size-4" />
+            </button>
+            <p className="font-display text-[10px] tracking-[0.4em] text-primary">
+              ACCESS GRANTED
+            </p>
+            <h3 className="mt-2 font-display text-lg font-extrabold text-foreground">
+              اختر اللعبة
+            </h3>
+            <div className="mt-5 flex items-center justify-center gap-3">
+              <button
+                onClick={() => void navigate({ to: "/aviator" })}
+                className="group relative h-[100px] w-[150px] overflow-hidden rounded-[15px] border border-border"
+              >
+                <img src={gameCrash} alt="Aviator" className="size-full object-cover" />
+                <span className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                <span className="absolute inset-x-0 bottom-1.5 font-display text-[11px] font-bold text-foreground">
+                  Aviator
+                </span>
+              </button>
+              <button
+                onClick={() => void navigate({ to: "/apple" })}
+                className="group relative h-[100px] w-[150px] overflow-hidden rounded-[15px] border border-primary/50"
+              >
+                <img src={gameApple} alt="Apple of fortune" className="size-full object-cover" />
+                <span className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                <span className="absolute inset-x-0 bottom-1.5 font-display text-[11px] font-bold text-primary">
+                  Apple of fortune
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
