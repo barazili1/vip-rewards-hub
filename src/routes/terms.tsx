@@ -381,6 +381,18 @@ function TermsPage() {
                 />
               </div>
 
+              <div className="mt-3 flex items-center gap-3 rounded-[15px] border border-input bg-secondary/40 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
+                <Send className="size-4 text-primary" />
+                <input
+                  value={telegramUser}
+                  onChange={(e) => setTelegramUser(e.target.value)}
+                  placeholder="ادخال يوزر التلجرام (@username)"
+                  className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                />
+              </div>
+
+
+
               <div className="mt-3 grid grid-cols-2 gap-3">
                 <UploadBox
                   label="صورة الإيداع"
