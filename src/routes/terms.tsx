@@ -4,8 +4,10 @@ import {
   Check,
   Copy,
   Download,
+  ImagePlus,
   Send,
   Ticket,
+  X,
   UserRound,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -108,8 +110,61 @@ function StepCard({
   );
 }
 
+function UploadBox({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string | null;
+  onChange: (v: string | null) => void;
+}) {
+  const inputId = `upload-${label}`;
+  return (
+    <div className="relative">
+      <input
+        id={inputId}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onChange(URL.createObjectURL(file));
+        }}
+      />
+      <label
+        htmlFor={inputId}
+        className="flex h-24 cursor-pointer flex-col items-center justify-center gap-1.5 overflow-hidden rounded-[15px] border border-dashed border-border bg-secondary/25 text-center transition-colors hover:border-primary/60"
+      >
+        {value ? (
+          <img src={value} alt={label} className="size-full object-cover" />
+        ) : (
+          <>
+            <ImagePlus className="size-5 text-primary" />
+            <span className="text-[11px] text-muted-foreground">{label}</span>
+            <span className="font-display text-[9px] tracking-[0.2em] text-muted-foreground/70">
+              UPLOAD
+            </span>
+          </>
+        )}
+      </label>
+      {value ? (
+        <button
+          onClick={() => onChange(null)}
+          aria-label={`حذف ${label}`}
+          className="absolute right-2 top-2 flex size-6 items-center justify-center rounded-full border border-border bg-background/80 text-foreground"
+        >
+          <X className="size-3" />
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 function TermsPage() {
   const [copied, setCopied] = useState(false);
+  const [depositShot, setDepositShot] = useState<string | null>(null);
+  const [idShot, setIdShot] = useState<string | null>(null);
   const [userId, setUserId] = useState("");
 
   const copyPromo = async () => {
@@ -190,31 +245,32 @@ function TermsPage() {
               title="التسجيل بالبروموكود"
               description="انسخ البروموكود واستخدمه أثناء التسجيل لربط حسابك بالتطبيق."
             >
-              <div className="flex items-center gap-4 rounded-2xl border border-dashed border-border bg-secondary/25 p-3">
-                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-border bg-card">
-                  <Ticket className="size-5 text-foreground" />
+              <div className="flex h-10 w-full items-center gap-3 rounded-[15px] border border-dashed border-border bg-secondary/25 px-2">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-border bg-card">
+                  <Ticket className="size-3.5 text-foreground" />
                 </span>
-                <div className="min-w-0 flex-1">
-                  <p className="font-display text-[10px] font-bold tracking-[0.3em] text-muted-foreground">
+                <div className="flex min-w-0 flex-1 items-baseline gap-2">
+                  <p className="font-display text-[9px] font-bold tracking-[0.25em] text-muted-foreground">
                     PROMOCODE
                   </p>
-                  <p className="font-display text-xl font-extrabold tracking-[0.18em] text-foreground">
+                  <p className="font-display text-sm font-extrabold tracking-[0.15em] text-foreground">
                     {PROMO}
                   </p>
                 </div>
                 <button
                   onClick={copyPromo}
                   aria-label="نسخ البرومو كود"
-                  className="flex items-center gap-2 rounded-xl px-2 py-2 font-display text-[11px] font-bold tracking-[0.2em] text-muted-foreground transition-colors hover:text-primary"
+                  className="flex items-center gap-1.5 px-1 font-display text-[10px] font-bold tracking-[0.15em] text-muted-foreground transition-colors hover:text-primary"
                 >
                   {copied ? "COPIED" : "COPY"}
                   {copied ? (
-                    <Check className="size-4" />
+                    <Check className="size-3.5" />
                   ) : (
-                    <Copy className="size-4" />
+                    <Copy className="size-3.5" />
                   )}
                 </button>
               </div>
+
 
               <button
                 onClick={() => toast("جاري تحويلك إلى صفحة التسجيل...")}
@@ -233,24 +289,24 @@ function TermsPage() {
             >
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { symbol: "$", value: "$6.00", unit: "USD" },
-                  { symbol: "E", value: "300", unit: "جنيه" },
+                  { symbol: "$", value: "6.00", unit: "USD", note: "دولار" },
+                  { symbol: "E£", value: "300", unit: "EGP", note: "جنيه" },
                 ].map((item) => (
                   <div
                     key={item.unit}
-                    className="relative overflow-hidden rounded-2xl border border-border bg-secondary/30 px-4 py-4"
+                    className="relative overflow-hidden rounded-[15px] border border-primary/25 bg-gradient-to-b from-primary/10 to-transparent p-3 text-center"
                   >
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute -top-2 right-2 font-display text-5xl font-extrabold text-foreground/10"
-                    >
+                    <span className="mx-auto flex size-8 items-center justify-center rounded-full border border-primary/40 bg-primary/15 font-display text-xs font-extrabold text-primary">
                       {item.symbol}
                     </span>
-                    <p className="font-display text-[10px] font-bold tracking-[0.25em] text-muted-foreground">
+                    <p className="mt-2 font-display text-2xl font-extrabold leading-none text-foreground">
+                      {item.value}
+                    </p>
+                    <p className="mt-1.5 font-display text-[9px] font-bold tracking-[0.25em] text-primary/80">
                       {item.unit}
                     </p>
-                    <p className="mt-1 font-display text-2xl font-extrabold text-foreground">
-                      {item.value}
+                    <p className="text-[10px] text-muted-foreground">
+                      {item.note}
                     </p>
                   </div>
                 ))}
@@ -261,9 +317,9 @@ function TermsPage() {
               image={stepId}
               badge="VERIFY"
               title="إدخال الـ ID الخاص بك"
-              description="أدخل رقم حسابك في MELBET لتأكيد إكمال الشروط."
+              description="أدخل رقم حسابك في MELBET وارفع صور التأكيد."
             >
-              <div className="flex items-center gap-3 rounded-2xl border border-input bg-secondary/40 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
+              <div className="flex items-center gap-3 rounded-[15px] border border-input bg-secondary/40 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
                 <BadgeCheck className="size-4 text-primary" />
                 <input
                   value={userId}
@@ -273,7 +329,21 @@ function TermsPage() {
                   className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                 />
               </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <UploadBox
+                  label="صورة الإيداع"
+                  value={depositShot}
+                  onChange={setDepositShot}
+                />
+                <UploadBox
+                  label="صورة الـ ID"
+                  value={idShot}
+                  onChange={setIdShot}
+                />
+              </div>
             </StepCard>
+
           </ol>
         </div>
 
