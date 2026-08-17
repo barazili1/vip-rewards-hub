@@ -14,7 +14,7 @@ export async function listCodes(): Promise<CodeEntry[]> {
   const data = (await res.json()) as Record<string, CodeEntry> | null;
   if (!data) return [];
   return Object.entries(data)
-    .map(([code, v]) => ({ ...v, code }))
+    .map(([code, v]) => ({ ...v, code, expiresAt: v.expiresAt ?? null }))
     .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
 }
 
@@ -24,7 +24,7 @@ export async function getCode(code: string): Promise<CodeEntry | null> {
   if (!res.ok) return null;
   const data = (await res.json()) as CodeEntry | null;
   if (!data) return null;
-  return { ...data, code: code.trim() };
+  return { ...data, code: code.trim(), expiresAt: data.expiresAt ?? null };
 }
 
 export async function saveCode(entry: CodeEntry): Promise<void> {
