@@ -16,10 +16,16 @@ function randomWin(): Win {
   return { id: randomId(), bet, win: Math.round(bet * mult) };
 }
 
+const SEED: Win[] = [
+  { id: "27*******81", bet: 50, win: 300 },
+  { id: "41*******06", bet: 100, win: 640 },
+  { id: "63*******19", bet: 20, win: 148 },
+  { id: "18*******74", bet: 200, win: 910 },
+  { id: "92*******35", bet: 75, win: 412 },
+];
+
 export function LiveWins() {
-  const [rows, setRows] = useState<Win[]>(() =>
-    Array.from({ length: 5 }, randomWin),
-  );
+  const [rows, setRows] = useState<Win[]>(SEED);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -27,6 +33,7 @@ export function LiveWins() {
     }, 2200);
     return () => clearInterval(t);
   }, []);
+
 
   return (
     <section className="surface-card mt-6 overflow-hidden rounded-3xl">

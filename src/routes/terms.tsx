@@ -14,9 +14,10 @@ import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { TopBar } from "@/components/dark-vip/TopBar";
 import heroImg from "@/assets/terms-hero.jpg";
-import stepDownload from "@/assets/step-download.jpg";
+import melbetLogo from "@/assets/melbet-logo.jpg";
+import gameApple from "@/assets/game-apple.jpg";
+import gameCrash from "@/assets/game-crash.jpg";
 import stepTelegram from "@/assets/step-telegram.jpg";
-import stepPromo from "@/assets/step-promo.jpg";
 import stepDeposit from "@/assets/step-deposit.jpg";
 import stepId from "@/assets/step-id.jpg";
 
@@ -209,19 +210,21 @@ function TermsPage() {
         <div className="relative mt-6 px-5">
           <ol className="space-y-5">
             <StepCard
-              image={stepDownload}
+              image={melbetLogo}
               badge="OFFICIAL"
               kicker="MELBET APP"
               title="تحميل منصة MELBET"
               description="قم بتحميل التطبيق الرسمي لمنصة MELBET لأجهزة أندرويد أو آيفون."
             >
-              <button
-                onClick={() => toast("جاري تحويلك إلى صفحة التحميل...")}
+              <a
+                href="https://refpa3665.com/L?tag=d_5703114m_70867c_&site=5703114&ad=70867"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex h-12 w-full items-center justify-center gap-2 rounded-[15px] bg-foreground font-display text-sm font-bold text-background shadow-lg transition-transform active:scale-[0.98]"
               >
                 <Download className="size-4" />
                 تحميل التطبيق
-              </button>
+              </a>
             </StepCard>
 
             <StepCard
@@ -231,17 +234,19 @@ function TermsPage() {
               title="الانضمام إلى قناة التلجرام"
               description="اشترك في القناة لمتابعة التحديثات واستلام كود التفعيل."
             >
-              <button
-                onClick={() => toast("جاري تحويلك إلى قناة التلجرام...")}
+              <a
+                href="https://t.me/+MhA9HqqjqXYyMGY0"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-gold flex h-12 w-full items-center justify-center gap-2 rounded-[15px] font-display text-sm font-bold text-primary-foreground transition-transform active:scale-[0.98]"
               >
                 <Send className="size-4" />
                 انضمام الآن
-              </button>
+              </a>
             </StepCard>
 
             <StepCard
-              image={stepPromo}
+              image={melbetLogo}
               badge="PROMO"
               title="التسجيل بالبروموكود"
               description="انسخ البروموكود واستخدمه أثناء التسجيل لربط حسابك بالتطبيق."
@@ -273,13 +278,15 @@ function TermsPage() {
               </div>
 
 
-              <button
-                onClick={() => toast("جاري تحويلك إلى صفحة التسجيل...")}
+              <a
+                href="https://refpa3665.com/L?tag=d_5703114m_2170c_&site=5703114&ad=2170"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-[15px] bg-foreground font-display text-sm font-bold text-background shadow-lg transition-transform active:scale-[0.98]"
               >
                 <UserRound className="size-4" />
                 التسجيل في منصة MELBET
-              </button>
+              </a>
             </StepCard>
 
             <StepCard
@@ -348,15 +355,31 @@ function TermsPage() {
                 <div className="animate-rise mt-3 flex items-center justify-center gap-3">
                   <Link
                     to="/aviator"
-                    className="flex h-[50px] w-[100px] items-center justify-center rounded-[15px] border border-border bg-secondary/40 px-1 text-center font-display text-[11px] font-bold leading-tight text-foreground transition-colors hover:border-primary/60"
+                    className="group relative h-[100px] w-[150px] overflow-hidden rounded-[15px] border border-border transition-colors hover:border-primary/60"
                   >
-                    Aviator
+                    <img
+                      src={gameCrash}
+                      alt="Aviator"
+                      className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <span className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                    <span className="absolute inset-x-0 bottom-1.5 text-center font-display text-[11px] font-bold text-foreground">
+                      Aviator
+                    </span>
                   </Link>
                   <Link
                     to="/apple"
-                    className="flex h-[50px] w-[100px] items-center justify-center rounded-[15px] border border-primary/50 bg-primary/15 px-1 text-center font-display text-[11px] font-bold leading-tight text-primary transition-colors hover:bg-primary/25"
+                    className="group relative h-[100px] w-[150px] overflow-hidden rounded-[15px] border border-primary/50 transition-colors hover:border-primary"
                   >
-                    Apple of fortune
+                    <img
+                      src={gameApple}
+                      alt="Apple of fortune"
+                      className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <span className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                    <span className="absolute inset-x-0 bottom-1.5 text-center font-display text-[11px] font-bold text-primary">
+                      Apple of fortune
+                    </span>
                   </Link>
                 </div>
               ) : null}

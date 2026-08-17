@@ -4,7 +4,7 @@ import { Play, RotateCcw } from "lucide-react";
 import { TopBar } from "@/components/dark-vip/TopBar";
 import { BrandName } from "@/components/dark-vip/BrandName";
 import { LiveWins } from "@/components/dark-vip/LiveWins";
-import logo from "@/assets/dark-vip-logo.png";
+import logo from "@/assets/brand-logo.jpg";
 
 export const Route = createFileRoute("/aviator")({
   head: () => ({
@@ -33,13 +33,13 @@ function AviatorPage() {
   useEffect(() => {
     if (!flying) return;
     const start = Date.now();
-    const duration = 3200;
+    const duration = 1000;
     const id = setInterval(() => {
       const t = Math.min((Date.now() - start) / duration, 1);
       const eased = 1 - Math.pow(1 - t, 2);
       setOdd(1 + (target - 1) * eased);
       if (t >= 1) clearInterval(id);
-    }, 60);
+    }, 30);
     return () => clearInterval(id);
   }, [flying, round, target]);
 
@@ -107,22 +107,35 @@ function AviatorPage() {
             />
           </svg>
 
-          {/* trail + plane */}
-          <div
+          {/* trail + dot */}
+          <svg
             key={flying ? `run-${round}` : "idle"}
-            className={`absolute bottom-6 left-4 ${flying ? "animate-fly" : "opacity-0"}`}
+            viewBox="0 0 400 280"
+            preserveAspectRatio="none"
+            className={`absolute inset-0 size-full ${flying ? "" : "opacity-0"}`}
           >
-            <div className="relative">
-              <span className="absolute right-full top-1/2 h-[3px] w-[140px] -translate-y-1/2 rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,120,20,0.15),rgba(255,170,40,0.9))]" />
-              <svg viewBox="0 0 64 40" className="size-12 -rotate-[18deg]">
-                <ellipse cx="30" cy="24" rx="20" ry="7" fill="#f0b23c" />
-                <path d="M22 20 L40 8 L44 12 L28 22Z" fill="#e6a02a" />
-                <path d="M46 22 L60 16 L60 26Z" fill="#f6c765" />
-                <circle cx="12" cy="24" r="5" fill="#c9821d" />
-                <rect x="26" y="18" width="10" height="4" rx="2" fill="#fff2d0" />
-              </svg>
-            </div>
-          </div>
+            <defs>
+              <linearGradient id="trailGrad" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stopColor="rgba(255,110,20,0.15)" />
+                <stop offset="55%" stopColor="rgba(255,150,30,0.75)" />
+                <stop offset="100%" stopColor="rgba(255,205,90,1)" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M0 280 C 130 274, 265 215, 400 30"
+              fill="none"
+              stroke="url(#trailGrad)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              className={flying ? "animate-trail" : ""}
+            />
+            <circle
+              r="15"
+              fill="#f5c451"
+              className={flying ? "animate-fly-dot" : ""}
+              style={{ offsetPath: 'path("M0 280 C 130 274, 265 215, 400 30")' }}
+            />
+          </svg>
 
           {/* multiplier */}
           <div className="absolute inset-0 flex items-center justify-center">

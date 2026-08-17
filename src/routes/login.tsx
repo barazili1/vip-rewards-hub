@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { KeyRound, LifeBuoy, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import logo from "@/assets/dark-vip-logo.png";
+import logo from "@/assets/brand-logo.jpg";
 import { BrandName } from "@/components/dark-vip/BrandName";
 import { TopBar } from "@/components/dark-vip/TopBar";
 
