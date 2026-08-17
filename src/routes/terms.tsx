@@ -1,10 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { submitRegistration } from "@/lib/telegram.functions";
 import {
   BadgeCheck,
   Check,
   Copy,
   Download,
   ImagePlus,
+  Loader2,
   Send,
   Ticket,
   X,
