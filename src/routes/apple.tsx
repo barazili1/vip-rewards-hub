@@ -1,9 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Play, RotateCcw } from "lucide-react";
+import { Loader2, Play, RotateCcw } from "lucide-react";
+import { toast } from "sonner";
 import { TopBar } from "@/components/dark-vip/TopBar";
 import { LiveWins } from "@/components/dark-vip/LiveWins";
 import { BrandName } from "@/components/dark-vip/BrandName";
+import { CodeTimer, useCodeGuard } from "@/components/dark-vip/CodeTimer";
+import {
+  generateAppleSignals,
+  getAppleSignals,
+  setAppleSignals,
+} from "@/lib/firebase";
+import { APPLE_SIGNAL_CODE } from "@/lib/session";
 import logo from "@/assets/brand-logo.jpg";
 
 export const Route = createFileRoute("/apple")({
@@ -30,23 +38,53 @@ const CELL_GOOD = "https://logo12.gamer.gd/apple.png";
 const CELL_BAD = "https://logo12.gamer.gd/poi.png";
 
 // من تحت لفوق: 1.23 ... 349.43
-const ODDS = [
-  1.23, 1.54, 1.93, 2.41, 4.02, 6.71, 11.18, 27.97, 69.93, 349.43,
-];
+const ODDS = [1.23, 1.54, 1.93, 2.41, 4.02, 6.71, 11.18, 27.97, 69.93, 349.43];
 
-
-function randomRows() {
-  return Array.from({ length: 10 }, () => Math.floor(Math.random() * 5));
+/** local fallback signals (m1 = bottom-left) */
+function localSignals() {
+  return generateAppleSignals();
 }
 
 function ApplePage() {
-  const [rotten, setRotten] = useState<number[] | null>(null);
+  const { session, ready } = useCodeGuard();
+  const [signals, setSignals] = useState<number[] | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const useFirebase = session?.code.trim().toUpperCase() === APPLE_SIGNAL_CODE;
+
+  const start = async () => {
+    setBusy(true);
+    try {
+      setSignals(useFirebase ? await getAppleSignals() : localSignals());
+    } catch {
+      toast.error("تعذّر تحميل التوقعات");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const restart = async () => {
+    setSignals(null);
+    if (!useFirebase) return;
+    setBusy(true);
+    try {
+      const next = generateAppleSignals();
+      await setAppleSignals(next);
+      toast.success("تم تحديث التوقعات");
+    } catch {
+      toast.error("تعذّر تحديث التوقعات");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!ready || !session) return null;
 
   const rowsTopDown = [...ODDS].reverse();
 
   return (
     <div className="min-h-screen">
-      <TopBar backTo="/terms" />
+      <TopBar backTo="/login" />
 
       <main className="mx-auto w-full max-w-xl px-5 pb-16">
         <section className="mt-6 flex flex-col items-center">
@@ -63,11 +101,12 @@ function ApplePage() {
           </p>
         </section>
 
-        <section className="surface-card mt-6 rounded-3xl p-4">
+        <CodeTimer session={session} />
+
+        <section className="surface-card mt-5 rounded-3xl p-4">
           <div className="flex flex-col gap-2">
             {rowsTopDown.map((odd, rowFromTop) => {
-              const rowIndex = 9 - rowFromTop;
-              const badIndex = rotten ? rotten[rowIndex] : null;
+              const row = 9 - rowFromTop; // 0 = bottom row (m1..m5)
               return (
                 <div key={odd} className="flex items-center justify-center gap-2">
                   <span className="w-14 shrink-0 text-left font-display text-[11px] font-bold text-primary">
@@ -75,10 +114,11 @@ function ApplePage() {
                   </span>
                   <div className="flex gap-2">
                     {Array.from({ length: 5 }).map((_, col) => {
+                      const value = signals ? signals[row * 5 + col] : null;
                       const src =
-                        badIndex === null
+                        value === null
                           ? CELL_EMPTY
-                          : col === badIndex
+                          : value === 1
                             ? CELL_BAD
                             : CELL_GOOD;
                       return (
@@ -97,7 +137,6 @@ function ApplePage() {
                     })}
                   </div>
                 </div>
-
               );
             })}
           </div>
@@ -105,15 +144,21 @@ function ApplePage() {
 
         <div className="mt-5 grid grid-cols-2 gap-3">
           <button
-            onClick={() => setRotten(randomRows())}
-            className="flex h-12 items-center justify-center gap-2 rounded-[15px] bg-foreground font-display text-sm font-extrabold text-background shadow-lg transition-transform active:scale-[0.98]"
+            onClick={() => void start()}
+            disabled={busy}
+            className="flex h-12 items-center justify-center gap-2 rounded-[15px] bg-foreground font-display text-sm font-extrabold text-background shadow-lg transition-transform active:scale-[0.98] disabled:opacity-60"
           >
-            <Play className="size-4" />
+            {busy ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Play className="size-4" />
+            )}
             بدأ
           </button>
           <button
-            onClick={() => setRotten(null)}
-            className="bg-gold flex h-12 items-center justify-center gap-2 rounded-[15px] font-display text-sm font-extrabold text-primary-foreground transition-transform active:scale-[0.98]"
+            onClick={() => void restart()}
+            disabled={busy}
+            className="bg-gold flex h-12 items-center justify-center gap-2 rounded-[15px] font-display text-sm font-extrabold text-primary-foreground transition-transform active:scale-[0.98] disabled:opacity-60"
           >
             <RotateCcw className="size-4" />
             اعاده بدأ
@@ -121,7 +166,6 @@ function ApplePage() {
         </div>
 
         <LiveWins />
-
       </main>
     </div>
   );
