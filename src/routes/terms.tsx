@@ -3,14 +3,12 @@ import {
   BadgeCheck,
   Check,
   Copy,
-  CreditCard,
   Download,
   Send,
-  Smartphone,
   Ticket,
   UserRound,
 } from "lucide-react";
-import { useState, type ComponentType, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { TopBar } from "@/components/dark-vip/TopBar";
 import heroImg from "@/assets/terms-hero.jpg";
@@ -42,7 +40,6 @@ export const Route = createFileRoute("/terms")({
 const PROMO = "MELBG";
 
 function StepCard({
-  icon: Icon,
   image,
   badge,
   badgeTone = "gold",
@@ -51,7 +48,6 @@ function StepCard({
   description,
   children,
 }: {
-  icon: ComponentType<{ className?: string }>;
   image: string;
   badge: string;
   badgeTone?: "gold" | "blue";
@@ -157,7 +153,6 @@ function TermsPage() {
         <div className="relative mt-6 px-5">
           <ol className="space-y-5">
             <StepCard
-              icon={Smartphone}
               image={stepDownload}
               badge="OFFICIAL"
               kicker="MELBET APP"
@@ -174,7 +169,6 @@ function TermsPage() {
             </StepCard>
 
             <StepCard
-              icon={Send}
               image={stepTelegram}
               badge="TELEGRAM"
               badgeTone="blue"
@@ -191,7 +185,6 @@ function TermsPage() {
             </StepCard>
 
             <StepCard
-              icon={Ticket}
               image={stepPromo}
               badge="PROMO"
               title="التسجيل بالبروموكود"
@@ -233,7 +226,6 @@ function TermsPage() {
             </StepCard>
 
             <StepCard
-              icon={CreditCard}
               image={stepDeposit}
               badge="DEPOSIT"
               title="إيداع التفعيل"
@@ -266,7 +258,6 @@ function TermsPage() {
             </StepCard>
 
             <StepCard
-              icon={BadgeCheck}
               image={stepId}
               badge="VERIFY"
               title="إدخال الـ ID الخاص بك"
