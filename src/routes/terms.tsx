@@ -44,7 +44,7 @@ export const Route = createFileRoute("/terms")({
   component: TermsPage,
 });
 
-const PROMO = "MELBG";
+const PROMO = "B2BMEL";
 
 function StepCard({
   image,
@@ -296,7 +296,7 @@ function TermsPage() {
               title="التسجيل بالبروموكود"
               description="انسخ البروموكود واستخدمه أثناء التسجيل لربط حسابك بالتطبيق."
             >
-              <div className="flex h-10 w-full items-center gap-3 rounded-[15px] border border-dashed border-border bg-secondary/25 px-2">
+              <div className="flex h-[50px] w-full items-center gap-3 rounded-[15px] border border-dashed border-border bg-secondary/25 px-3">
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-border bg-card">
                   <Ticket className="size-3.5 text-foreground" />
                 </span>
@@ -501,15 +501,13 @@ function TermsPage() {
                   تم إرسال طلبك بنجاح
                 </h3>
                 <p className="mt-4 text-[11px] text-muted-foreground">
-                  يوزر التلجرام الخاص بك
+                  تواصل مع الدعم لاستلام الكود
                 </p>
                 <p className="mt-1 font-display text-base font-extrabold text-foreground">
-                  {telegramUser.trim().startsWith("@")
-                    ? telegramUser.trim()
-                    : `@${telegramUser.trim()}`}
+                  @B2BMEL
                 </p>
                 <a
-                  href="https://t.me/+MhA9HqqjqXYyMGY0"
+                  href="https://t.me/B2BMEL"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-6 flex h-13 w-full items-center justify-center rounded-[15px] bg-foreground font-display text-sm font-extrabold text-background shadow-lg transition-transform active:scale-[0.98]"
