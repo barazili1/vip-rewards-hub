@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BadgeCheck, Check, Copy } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import {
+  BadgeCheck,
+  Check,
+  Copy,
+  CreditCard,
+  Download,
+  Send,
+  Smartphone,
+  Ticket,
+  UserRound,
+} from "lucide-react";
+import { useState, type ComponentType, type ReactNode } from "react";
 import { toast } from "sonner";
 import { TopBar } from "@/components/dark-vip/TopBar";
 import heroImg from "@/assets/terms-hero.jpg";
@@ -32,50 +42,80 @@ export const Route = createFileRoute("/terms")({
 const PROMO = "MELBG";
 
 function StepCard({
-  index,
+  icon: Icon,
   image,
+  badge,
+  badgeTone = "gold",
+  kicker,
   title,
-  subtitle,
+  description,
   children,
 }: {
-  index: number;
+  icon: ComponentType<{ className?: string }>;
   image: string;
+  badge: string;
+  badgeTone?: "gold" | "blue";
+  kicker?: string;
   title: string;
-  subtitle: string;
+  description: string;
   children?: ReactNode;
 }) {
   return (
-    <li className="surface-card animate-rise relative overflow-hidden p-5">
-      <span className="bg-gold absolute inset-y-0 left-0 w-[3px] opacity-70" />
+    <li className="animate-rise relative pl-12">
+      {/* timeline node */}
+      <span
+        aria-hidden
+        className="absolute left-0 top-6 flex size-10 items-center justify-center rounded-full border border-primary/30 bg-card/80 backdrop-blur"
+      >
+        <Icon className="size-4 text-primary" />
+      </span>
 
-      <div className="flex items-center gap-4">
-        <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl border border-border bg-secondary/40">
-          <img
-            src={image}
-            alt=""
-            loading="lazy"
-            width={512}
-            height={512}
-            className="size-full object-cover"
-          />
-        </div>
+      <div className="surface-card relative overflow-hidden rounded-3xl p-5">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-16 size-40 rounded-full bg-primary/10 blur-3xl"
+        />
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-display text-[10px] font-bold tracking-widest text-primary">
-              STEP {index}
-            </span>
-            <span className="text-[10px] tracking-[0.2em] text-muted-foreground">
-              {subtitle}
-            </span>
+        <div className="flex items-start gap-4">
+          <div className="size-14 shrink-0 overflow-hidden rounded-2xl border border-border bg-secondary/40">
+            <img
+              src={image}
+              alt=""
+              loading="lazy"
+              width={512}
+              height={512}
+              className="size-full object-cover"
+            />
           </div>
-          <h2 className="mt-1.5 font-display text-[15px] font-bold leading-snug text-foreground">
-            {title}
-          </h2>
-        </div>
-      </div>
 
-      {children ? <div className="mt-5">{children}</div> : null}
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={
+                  badgeTone === "gold"
+                    ? "rounded-full border border-primary/50 bg-primary/15 px-2.5 py-0.5 font-display text-[10px] font-bold tracking-[0.18em] text-primary"
+                    : "rounded-full border border-sky-500/50 bg-sky-500/15 px-2.5 py-0.5 font-display text-[10px] font-bold tracking-[0.18em] text-sky-400"
+                }
+              >
+                {badge}
+              </span>
+              <h2 className="font-display text-[16px] font-extrabold leading-snug text-foreground">
+                {title}
+              </h2>
+            </div>
+            {kicker ? (
+              <p className="mt-1 font-display text-[11px] tracking-[0.3em] text-primary/80">
+                {kicker}
+              </p>
+            ) : null}
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              {description}
+            </p>
+          </div>
+        </div>
+
+        {children ? <div className="mt-5">{children}</div> : null}
+      </div>
     </li>
   );
 }
@@ -122,119 +162,143 @@ function TermsPage() {
           </div>
         </section>
 
-        <div className="flex items-center justify-center gap-2 px-5 pt-5">
-          {[1, 2, 3, 4, 5].map((n) => (
-            <span
-              key={n}
-              className="bg-gold h-1 w-8 rounded-full opacity-40 first:opacity-100"
-            />
-          ))}
-        </div>
+        <div className="relative mt-6 px-5">
+          {/* vertical rail */}
+          <span
+            aria-hidden
+            className="absolute bottom-10 left-[2.25rem] top-6 w-px bg-gradient-to-b from-primary/70 via-primary/30 to-transparent"
+          />
 
-        <ol className="mt-6 space-y-4 px-5">
-          <StepCard
-            index={1}
-            image={stepDownload}
-            subtitle="PLATFORM"
-            title="تحميل منصة MELBET"
-          >
-            <button
-              onClick={() => toast("جاري تحويلك إلى صفحة التحميل...")}
-              className="h-12 w-full rounded-2xl bg-foreground font-display text-sm font-bold text-background transition-transform active:scale-[0.98]"
+          <ol className="space-y-5">
+            <StepCard
+              icon={Smartphone}
+              image={stepDownload}
+              badge="OFFICIAL"
+              kicker="MELBET APP"
+              title="تحميل منصة MELBET"
+              description="قم بتحميل التطبيق الرسمي لمنصة MELBET لأجهزة أندرويد أو آيفون."
             >
-              تحميل
-            </button>
-          </StepCard>
-
-          <StepCard
-            index={2}
-            image={stepTelegram}
-            subtitle="COMMUNITY"
-            title="الانضمام إلى قناة التلجرام"
-          >
-            <button
-              onClick={() => toast("جاري تحويلك إلى قناة التلجرام...")}
-              className="bg-gold h-12 w-full rounded-2xl font-display text-sm font-bold text-primary-foreground transition-transform active:scale-[0.98]"
-            >
-              انضمام
-            </button>
-          </StepCard>
-
-          <StepCard
-            index={3}
-            image={stepPromo}
-            subtitle="PROMO CODE"
-            title="إنشاء حساب باستخدام البرومو كود الخاص بالتطبيق"
-          >
-            <div className="flex items-center gap-2 rounded-2xl border border-input bg-secondary/40 p-2 pl-4">
-              <span className="flex-1 font-mono text-lg font-bold tracking-[0.35em] text-primary">
-                {PROMO}
-              </span>
               <button
-                onClick={copyPromo}
-                aria-label="نسخ البرومو كود"
-                className="flex h-10 items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
+                onClick={() => toast("جاري تحويلك إلى صفحة التحميل...")}
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-foreground font-display text-sm font-bold text-background shadow-lg transition-transform active:scale-[0.98]"
               >
-                {copied ? (
-                  <Check className="size-4" />
-                ) : (
-                  <Copy className="size-4" />
-                )}
-                {copied ? "تم النسخ" : "نسخ"}
+                <Download className="size-4" />
+                تحميل التطبيق
               </button>
-            </div>
-            <button
-              onClick={() => toast("جاري تحويلك إلى صفحة التسجيل...")}
-              className="mt-3 h-12 w-full rounded-2xl bg-foreground font-display text-sm font-bold text-background transition-transform active:scale-[0.98]"
-            >
-              تسجيل
-            </button>
-          </StepCard>
+            </StepCard>
 
-          <StepCard
-            index={4}
-            image={stepDeposit}
-            subtitle="DEPOSIT"
-            title="إيداع مبلغ بحد أدنى"
-          >
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { value: "300", unit: "جنيه مصري" },
-                { value: "6", unit: "دولار أمريكي" },
-              ].map((item) => (
-                <div
-                  key={item.unit}
-                  className="rounded-2xl border border-primary/25 bg-primary/5 py-4 text-center"
-                >
-                  <p className="font-display text-2xl font-extrabold text-primary">
-                    {item.value}
+            <StepCard
+              icon={Send}
+              image={stepTelegram}
+              badge="TELEGRAM"
+              badgeTone="blue"
+              title="الانضمام إلى قناة التلجرام"
+              description="اشترك في القناة لمتابعة التحديثات واستلام كود التفعيل."
+            >
+              <button
+                onClick={() => toast("جاري تحويلك إلى قناة التلجرام...")}
+                className="bg-gold flex h-12 w-full items-center justify-center gap-2 rounded-2xl font-display text-sm font-bold text-primary-foreground transition-transform active:scale-[0.98]"
+              >
+                <Send className="size-4" />
+                انضمام الآن
+              </button>
+            </StepCard>
+
+            <StepCard
+              icon={Ticket}
+              image={stepPromo}
+              badge="PROMO"
+              title="التسجيل بالبروموكود"
+              description="انسخ البروموكود واستخدمه أثناء التسجيل لربط حسابك بالتطبيق."
+            >
+              <div className="flex items-center gap-4 rounded-2xl border border-dashed border-border bg-secondary/25 p-3">
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-border bg-card">
+                  <Ticket className="size-5 text-foreground" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-display text-[10px] font-bold tracking-[0.3em] text-muted-foreground">
+                    PROMOCODE
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
-                    {item.unit}
+                  <p className="font-display text-xl font-extrabold tracking-[0.18em] text-foreground">
+                    {PROMO}
                   </p>
                 </div>
-              ))}
-            </div>
-          </StepCard>
+                <button
+                  onClick={copyPromo}
+                  aria-label="نسخ البرومو كود"
+                  className="flex items-center gap-2 rounded-xl px-2 py-2 font-display text-[11px] font-bold tracking-[0.2em] text-muted-foreground transition-colors hover:text-primary"
+                >
+                  {copied ? "COPIED" : "COPY"}
+                  {copied ? (
+                    <Check className="size-4" />
+                  ) : (
+                    <Copy className="size-4" />
+                  )}
+                </button>
+              </div>
 
-          <StepCard
-            index={5}
-            image={stepId}
-            subtitle="VERIFY"
-            title="إدخال الـ ID الخاص بك"
-          >
-            <div className="flex items-center gap-3 rounded-2xl border border-input bg-secondary/40 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
-              <BadgeCheck className="size-4 text-primary" />
-              <input
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                placeholder="اكتب ID الحساب"
-                inputMode="numeric"
-                className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-              />
-            </div>
-          </StepCard>
-        </ol>
+              <button
+                onClick={() => toast("جاري تحويلك إلى صفحة التسجيل...")}
+                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-foreground font-display text-sm font-bold text-background shadow-lg transition-transform active:scale-[0.98]"
+              >
+                <UserRound className="size-4" />
+                التسجيل في منصة MELBET
+              </button>
+            </StepCard>
+
+            <StepCard
+              icon={CreditCard}
+              image={stepDeposit}
+              badge="DEPOSIT"
+              title="إيداع التفعيل"
+              description="الحد الأدنى للإيداع لتنشيط المحفظة (الأموال تبقى في رصيدك)."
+            >
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { symbol: "$", value: "$6.00", unit: "USD" },
+                  { symbol: "E", value: "300", unit: "جنيه" },
+                ].map((item) => (
+                  <div
+                    key={item.unit}
+                    className="relative overflow-hidden rounded-2xl border border-border bg-secondary/30 px-4 py-4"
+                  >
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute -top-2 right-2 font-display text-5xl font-extrabold text-foreground/10"
+                    >
+                      {item.symbol}
+                    </span>
+                    <p className="font-display text-[10px] font-bold tracking-[0.25em] text-muted-foreground">
+                      {item.unit}
+                    </p>
+                    <p className="mt-1 font-display text-2xl font-extrabold text-foreground">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </StepCard>
+
+            <StepCard
+              icon={BadgeCheck}
+              image={stepId}
+              badge="VERIFY"
+              title="إدخال الـ ID الخاص بك"
+              description="أدخل رقم حسابك في MELBET لتأكيد إكمال الشروط."
+            >
+              <div className="flex items-center gap-3 rounded-2xl border border-input bg-secondary/40 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
+                <BadgeCheck className="size-4 text-primary" />
+                <input
+                  value={userId}
+                  onChange={(e) => setUserId(e.target.value)}
+                  placeholder="اكتب ID الحساب"
+                  inputMode="numeric"
+                  className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                />
+              </div>
+            </StepCard>
+          </ol>
+        </div>
 
         <div className="px-5">
           <button
