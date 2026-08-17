@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Play, RotateCcw } from "lucide-react";
 import { TopBar } from "@/components/dark-vip/TopBar";
+import { LiveWins } from "@/components/dark-vip/LiveWins";
 import { BrandName } from "@/components/dark-vip/BrandName";
 import logo from "@/assets/dark-vip-logo.png";
 
@@ -33,13 +34,6 @@ const ODDS = [
   1.23, 1.54, 1.93, 2.41, 4.02, 6.71, 11.18, 27.97, 69.93, 349.43,
 ];
 
-const WINNERS = [
-  { id: "27*******81", bet: 50, win: 300 },
-  { id: "31*******04", bet: 120, win: 964 },
-  { id: "45*******17", bet: 75, win: 512 },
-  { id: "58*******62", bet: 200, win: 1490 },
-  { id: "62*******39", bet: 40, win: 268 },
-];
 
 function randomRows() {
   return Array.from({ length: 10 }, () => Math.floor(Math.random() * 5));
@@ -76,6 +70,9 @@ function ApplePage() {
               const badIndex = rotten ? rotten[rowIndex] : null;
               return (
                 <div key={odd} className="flex items-center justify-center gap-2">
+                  <span className="w-14 shrink-0 text-left font-display text-[11px] font-bold text-primary">
+                    {odd.toFixed(2)}
+                  </span>
                   <div className="flex gap-2">
                     {Array.from({ length: 5 }).map((_, col) => {
                       const src =
@@ -99,10 +96,8 @@ function ApplePage() {
                       );
                     })}
                   </div>
-                  <span className="w-14 shrink-0 text-left font-display text-[11px] font-bold text-primary">
-                    {odd.toFixed(2)}
-                  </span>
                 </div>
+
               );
             })}
           </div>
@@ -125,30 +120,8 @@ function ApplePage() {
           </button>
         </div>
 
-        <section className="surface-card mt-6 overflow-hidden rounded-3xl">
-          <div className="border-b border-border px-4 py-3">
-            <p className="font-display text-[10px] font-bold tracking-[0.3em] text-primary">
-              LATEST WINS
-            </p>
-          </div>
-          <div className="grid grid-cols-3 gap-2 border-b border-border px-4 py-2 font-display text-[10px] font-bold tracking-[0.12em] text-muted-foreground">
-            <span>User id</span>
-            <span className="text-center">BetAmount</span>
-            <span className="text-right">WinAmount</span>
-          </div>
-          {WINNERS.map((w) => (
-            <div
-              key={w.id}
-              className="grid grid-cols-3 gap-2 border-b border-border/60 px-4 py-2.5 text-xs last:border-0"
-            >
-              <span className="font-display text-foreground">{w.id}</span>
-              <span className="text-center text-muted-foreground">{w.bet}</span>
-              <span className="text-right font-display font-bold text-primary">
-                {w.win}
-              </span>
-            </div>
-          ))}
-        </section>
+        <LiveWins />
+
       </main>
     </div>
   );
