@@ -106,13 +106,11 @@ function LoginPage() {
           </div>
 
           <button
-            onClick={() =>
-              code.trim()
-                ? toast.success("جاري التحقق من الكود...")
-                : toast.error("الرجاء إدخال الكود أولاً")
-            }
-            className="mt-6 h-13 w-full rounded-2xl bg-foreground font-display text-sm font-bold tracking-wide text-background transition-transform active:scale-[0.98]"
+            onClick={() => void handleLogin()}
+            disabled={checking}
+            className="mt-6 flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-foreground font-display text-sm font-bold tracking-wide text-background transition-transform active:scale-[0.98] disabled:opacity-60"
           >
+            {checking ? <Loader2 className="size-4 animate-spin" /> : null}
             تسجيل الدخول
           </button>
 
