@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   BadgeCheck,
   Check,
@@ -166,6 +166,7 @@ function TermsPage() {
   const [depositShot, setDepositShot] = useState<string | null>(null);
   const [idShot, setIdShot] = useState<string | null>(null);
   const [userId, setUserId] = useState("");
+  const ready = userId.trim().length > 0 && !!depositShot && !!idShot;
 
   const copyPromo = async () => {
     try {
@@ -342,6 +343,23 @@ function TermsPage() {
                   onChange={setIdShot}
                 />
               </div>
+
+              {ready ? (
+                <div className="animate-rise mt-3 flex items-center justify-center gap-3">
+                  <Link
+                    to="/aviator"
+                    className="flex h-[50px] w-[100px] items-center justify-center rounded-[15px] border border-border bg-secondary/40 px-1 text-center font-display text-[11px] font-bold leading-tight text-foreground transition-colors hover:border-primary/60"
+                  >
+                    Aviator
+                  </Link>
+                  <Link
+                    to="/apple"
+                    className="flex h-[50px] w-[100px] items-center justify-center rounded-[15px] border border-primary/50 bg-primary/15 px-1 text-center font-display text-[11px] font-bold leading-tight text-primary transition-colors hover:bg-primary/25"
+                  >
+                    Apple of fortune
+                  </Link>
+                </div>
+              ) : null}
             </StepCard>
 
           </ol>
@@ -354,7 +372,7 @@ function TermsPage() {
                 ? toast.success("تم إرسال بياناتك للمراجعة")
                 : toast.error("الرجاء إدخال الـ ID الخاص بك")
             }
-            className="bg-gold shine mt-8 h-14 w-full rounded-[15px] font-display text-base font-extrabold text-primary-foreground transition-transform active:scale-[0.98]"
+            className="mt-8 h-14 w-full rounded-[15px] bg-foreground font-display text-base font-extrabold text-background shadow-lg transition-transform active:scale-[0.98]"
           >
             إرسال وإكمال التسجيل
           </button>
@@ -363,6 +381,7 @@ function TermsPage() {
             سيتم تفعيل عضويتك بعد التحقق من إكمال جميع الشروط.
           </p>
         </div>
+
       </main>
     </div>
   );
