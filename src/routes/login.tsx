@@ -30,6 +30,38 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const [code, setCode] = useState("");
+  const [checking, setChecking] = useState(false);
+  const [picker, setPicker] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    const value = code.trim();
+    if (!value) {
+      toast.error("الرجاء إدخال الكود أولاً");
+      return;
+    }
+    setChecking(true);
+    try {
+      const entry = await getCode(value);
+      if (!entry) {
+        clearSession();
+        toast.error("الكود غير صحيح أو غير موجود");
+        return;
+      }
+      if (entry.expiresAt !== null && entry.expiresAt <= Date.now()) {
+        clearSession();
+        toast.error("انتهت صلاحية هذا الكود");
+        return;
+      }
+      saveSession({ code: entry.code, expiresAt: entry.expiresAt ?? null });
+      toast.success("تم التحقق من الكود بنجاح");
+      setPicker(true);
+    } catch {
+      toast.error("تعذّر التحقق من الكود، حاول مرة أخرى");
+    } finally {
+      setChecking(false);
+    }
+  };
 
   return (
     <div className="min-h-screen">
