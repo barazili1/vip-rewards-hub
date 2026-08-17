@@ -41,7 +41,7 @@ export function Particles({ count = 100 }: { count?: number }) {
       const linkDist = Math.min(130, Math.max(90, width / 6));
 
       for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
+        const p = particles[i]!;
         p.x += p.vx;
         p.y += p.vy;
         if (p.x < -20) p.x = width + 20;
@@ -50,7 +50,7 @@ export function Particles({ count = 100 }: { count?: number }) {
         if (p.y > height + 20) p.y = -20;
 
         for (let j = i + 1; j < particles.length; j++) {
-          const q = particles[j];
+          const q = particles[j]!;
           const dx = p.x - q.x;
           const dy = p.y - q.y;
           const dist = Math.hypot(dx, dy);
