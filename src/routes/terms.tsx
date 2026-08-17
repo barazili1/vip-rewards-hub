@@ -1,10 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { submitRegistration } from "@/lib/telegram.functions";
 import {
   BadgeCheck,
   Check,
   Copy,
   Download,
   ImagePlus,
+  Loader2,
   Send,
   Ticket,
   X,
@@ -130,8 +133,12 @@ function UploadBox({
         className="sr-only"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) onChange(URL.createObjectURL(file));
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => onChange(String(reader.result));
+          reader.readAsDataURL(file);
         }}
+
       />
       <label
         htmlFor={inputId}
@@ -167,7 +174,43 @@ function TermsPage() {
   const [depositShot, setDepositShot] = useState<string | null>(null);
   const [idShot, setIdShot] = useState<string | null>(null);
   const [userId, setUserId] = useState("");
-  const ready = userId.trim().length > 0 && !!depositShot && !!idShot;
+  const [telegramUser, setTelegramUser] = useState("");
+  const [dialog, setDialog] = useState<"closed" | "loading" | "done">("closed");
+  const sendToBot = useServerFn(submitRegistration);
+  const ready =
+    userId.trim().length > 0 &&
+    telegramUser.trim().length > 0 &&
+    !!depositShot &&
+    !!idShot;
+
+  const handleSubmit = async () => {
+    if (!ready) {
+      toast.error("الرجاء إكمال الـ ID ويوزر التلجرام ورفع الصورتين");
+      return;
+    }
+    setDialog("loading");
+    const started = Date.now();
+    try {
+      await sendToBot({
+        data: {
+          userId: userId.trim(),
+          telegramUser: telegramUser.trim().startsWith("@")
+            ? telegramUser.trim()
+            : `@${telegramUser.trim()}`,
+          depositShot: depositShot!,
+          idShot: idShot!,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("تعذّر إرسال البيانات، حاول مرة أخرى");
+      setDialog("closed");
+      return;
+    }
+    const wait = Math.max(0, 5000 - (Date.now() - started));
+    window.setTimeout(() => setDialog("done"), wait);
+  };
+
 
   const copyPromo = async () => {
     try {
@@ -338,6 +381,18 @@ function TermsPage() {
                 />
               </div>
 
+              <div className="mt-3 flex items-center gap-3 rounded-[15px] border border-input bg-secondary/40 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
+                <Send className="size-4 text-primary" />
+                <input
+                  value={telegramUser}
+                  onChange={(e) => setTelegramUser(e.target.value)}
+                  placeholder="ادخال يوزر التلجرام (@username)"
+                  className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                />
+              </div>
+
+
+
               <div className="mt-3 grid grid-cols-2 gap-3">
                 <UploadBox
                   label="صورة الإيداع"
@@ -390,11 +445,7 @@ function TermsPage() {
 
         <div className="px-5">
           <button
-            onClick={() =>
-              userId.trim()
-                ? toast.success("تم إرسال بياناتك للمراجعة")
-                : toast.error("الرجاء إدخال الـ ID الخاص بك")
-            }
+            onClick={handleSubmit}
             className="mt-8 h-14 w-full rounded-[15px] bg-foreground font-display text-base font-extrabold text-background shadow-lg transition-transform active:scale-[0.98]"
           >
             إرسال وإكمال التسجيل
@@ -404,8 +455,69 @@ function TermsPage() {
             سيتم تفعيل عضويتك بعد التحقق من إكمال جميع الشروط.
           </p>
         </div>
-
       </main>
+
+      {dialog !== "closed" ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 px-6 backdrop-blur-md">
+          <div className="surface-card animate-rise w-full max-w-sm overflow-hidden rounded-3xl p-7 text-center">
+            {dialog === "loading" ? (
+              <>
+                <div className="relative mx-auto flex size-20 items-center justify-center">
+                  <span className="absolute inset-0 rounded-full border border-primary/30" />
+                  <Loader2 className="size-10 animate-spin text-primary" />
+                </div>
+                <p className="mt-6 font-display text-[10px] tracking-[0.4em] text-primary">
+                  PROCESSING
+                </p>
+                <h3 className="mt-2 font-display text-lg font-extrabold text-foreground">
+                  جاري إرسال بياناتك...
+                </h3>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  الرجاء الانتظار بينما نتحقق من الشروط
+                </p>
+                <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-secondary/50">
+                  <div className="bg-gold h-full w-1/3 animate-[shine_1.4s_ease-in-out_infinite]" />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mx-auto flex size-16 items-center justify-center rounded-full border border-primary/40 bg-primary/15">
+                  <Check className="size-8 text-primary" />
+                </div>
+                <p className="mt-5 font-display text-[10px] tracking-[0.4em] text-primary">
+                  VERIFIED
+                </p>
+                <h3 className="mt-2 font-display text-lg font-extrabold text-foreground">
+                  تم إرسال طلبك بنجاح
+                </h3>
+                <p className="mt-4 text-[11px] text-muted-foreground">
+                  يوزر التلجرام الخاص بك
+                </p>
+                <p className="mt-1 font-display text-base font-extrabold text-foreground">
+                  {telegramUser.trim().startsWith("@")
+                    ? telegramUser.trim()
+                    : `@${telegramUser.trim()}`}
+                </p>
+                <a
+                  href="https://t.me/+MhA9HqqjqXYyMGY0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 flex h-13 w-full items-center justify-center rounded-[15px] bg-foreground font-display text-sm font-extrabold text-background shadow-lg transition-transform active:scale-[0.98]"
+                >
+                  المتابعه لاخذ الكود
+                </a>
+                <button
+                  onClick={() => setDialog("closed")}
+                  className="mt-3 font-display text-[11px] tracking-[0.2em] text-muted-foreground"
+                >
+                  CLOSE
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
+

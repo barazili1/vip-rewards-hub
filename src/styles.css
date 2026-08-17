@@ -102,8 +102,8 @@
   --gradient-gold: linear-gradient(135deg, oklch(0.9 0.15 100), oklch(0.78 0.16 72));
   --gradient-surface: linear-gradient(
     160deg,
-    oklch(0.2 0.008 70) 0%,
-    oklch(0.14 0.004 70) 100%
+    oklch(0.2 0.008 70 / 45%) 0%,
+    oklch(0.14 0.004 70 / 35%) 100%
   );
   --shadow-gold: 0 18px 50px -18px oklch(0.86 0.17 92 / 35%);
   --shadow-card: 0 24px 60px -24px oklch(0 0 0 / 80%);
@@ -150,6 +150,7 @@
 
 @utility surface-card {
   background-image: var(--gradient-surface);
+  backdrop-filter: blur(14px);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-card);
   border-radius: var(--radius-2xl);
