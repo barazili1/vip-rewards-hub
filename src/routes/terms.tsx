@@ -4,8 +4,10 @@ import {
   Check,
   Copy,
   Download,
+  ImagePlus,
   Send,
   Ticket,
+  X,
   UserRound,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -108,8 +110,61 @@ function StepCard({
   );
 }
 
+function UploadBox({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string | null;
+  onChange: (v: string | null) => void;
+}) {
+  const inputId = `upload-${label}`;
+  return (
+    <div className="relative">
+      <input
+        id={inputId}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onChange(URL.createObjectURL(file));
+        }}
+      />
+      <label
+        htmlFor={inputId}
+        className="flex h-24 cursor-pointer flex-col items-center justify-center gap-1.5 overflow-hidden rounded-[15px] border border-dashed border-border bg-secondary/25 text-center transition-colors hover:border-primary/60"
+      >
+        {value ? (
+          <img src={value} alt={label} className="size-full object-cover" />
+        ) : (
+          <>
+            <ImagePlus className="size-5 text-primary" />
+            <span className="text-[11px] text-muted-foreground">{label}</span>
+            <span className="font-display text-[9px] tracking-[0.2em] text-muted-foreground/70">
+              UPLOAD
+            </span>
+          </>
+        )}
+      </label>
+      {value ? (
+        <button
+          onClick={() => onChange(null)}
+          aria-label={`حذف ${label}`}
+          className="absolute right-2 top-2 flex size-6 items-center justify-center rounded-full border border-border bg-background/80 text-foreground"
+        >
+          <X className="size-3" />
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 function TermsPage() {
   const [copied, setCopied] = useState(false);
+  const [depositShot, setDepositShot] = useState<string | null>(null);
+  const [idShot, setIdShot] = useState<string | null>(null);
   const [userId, setUserId] = useState("");
 
   const copyPromo = async () => {
