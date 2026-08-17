@@ -71,7 +71,7 @@ function ApplePage() {
 
         <section className="surface-card mt-6 rounded-3xl p-4">
           <div className="flex flex-col gap-2">
-            {rowsTodown(rowsTopDown).map((odd, rowFromTop) => {
+            {rowsTopDown.map((odd, rowFromTop) => {
               const rowIndex = 9 - rowFromTop;
               const badIndex = rotten ? rotten[rowIndex] : null;
               return (
@@ -152,8 +152,4 @@ function ApplePage() {
       </main>
     </div>
   );
-}
-
-function rowsTodown(rows: number[]) {
-  return rows;
 }

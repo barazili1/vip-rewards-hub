@@ -10,12 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppleRouteImport } from './routes/apple'
+import { Route as AviatorRouteImport } from './routes/aviator'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as TermsRouteImport } from './routes/terms'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppleRoute = AppleRouteImport.update({
+  id: '/apple',
+  path: '/apple',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AviatorRoute = AviatorRouteImport.update({
+  id: '/aviator',
+  path: '/aviator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -31,30 +43,38 @@ const TermsRoute = TermsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/apple': typeof AppleRoute
+  '/aviator': typeof AviatorRoute
   '/login': typeof LoginRoute
   '/terms': typeof TermsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/apple': typeof AppleRoute
+  '/aviator': typeof AviatorRoute
   '/login': typeof LoginRoute
   '/terms': typeof TermsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/apple': typeof AppleRoute
+  '/aviator': typeof AviatorRoute
   '/login': typeof LoginRoute
   '/terms': typeof TermsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/terms'
+  fullPaths: '/' | '/apple' | '/aviator' | '/login' | '/terms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/terms'
-  id: '__root__' | '/' | '/login' | '/terms'
+  to: '/' | '/apple' | '/aviator' | '/login' | '/terms'
+  id: '__root__' | '/' | '/apple' | '/aviator' | '/login' | '/terms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppleRoute: typeof AppleRoute
+  AviatorRoute: typeof AviatorRoute
   LoginRoute: typeof LoginRoute
   TermsRoute: typeof TermsRoute
 }
@@ -66,6 +86,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apple': {
+      id: '/apple'
+      path: '/apple'
+      fullPath: '/apple'
+      preLoaderRoute: typeof AppleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aviator': {
+      id: '/aviator'
+      path: '/aviator'
+      fullPath: '/aviator'
+      preLoaderRoute: typeof AviatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -87,6 +121,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppleRoute: AppleRoute,
+  AviatorRoute: AviatorRoute,
   LoginRoute: LoginRoute,
   TermsRoute: TermsRoute,
 }
