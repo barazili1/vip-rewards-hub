@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { submitRegistration } from "@/lib/telegram.functions";
+import { ADMIN_ID, grantAdmin } from "@/lib/session";
 import {
   BadgeCheck,
   Check,
@@ -176,6 +177,7 @@ function TermsPage() {
   const [userId, setUserId] = useState("");
   const [telegramUser, setTelegramUser] = useState("");
   const [dialog, setDialog] = useState<"closed" | "loading" | "done">("closed");
+  const navigate = useNavigate();
   const sendToBot = useServerFn(submitRegistration);
   const ready =
     userId.trim().length > 0 &&
@@ -374,7 +376,15 @@ function TermsPage() {
                 <BadgeCheck className="size-4 text-primary" />
                 <input
                   value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setUserId(value);
+                    if (value.trim() === ADMIN_ID) {
+                      grantAdmin();
+                      toast.success("مرحبًا بك في لوحة التحكم");
+                      void navigate({ to: "/admin" });
+                    }
+                  }}
                   placeholder="اكتب ID الحساب"
                   inputMode="numeric"
                   className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"

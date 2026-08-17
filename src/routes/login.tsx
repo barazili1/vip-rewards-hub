@@ -1,10 +1,14 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { KeyRound, LifeBuoy, UserPlus } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { KeyRound, LifeBuoy, Loader2, UserPlus, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import logo from "@/assets/brand-logo.jpg";
+import gameApple from "@/assets/game-apple.jpg";
+import gameCrash from "@/assets/game-crash.jpg";
 import { BrandName } from "@/components/dark-vip/BrandName";
 import { TopBar } from "@/components/dark-vip/TopBar";
+import { getCode } from "@/lib/firebase";
+import { clearSession, saveSession } from "@/lib/session";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -26,6 +30,38 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const [code, setCode] = useState("");
+  const [checking, setChecking] = useState(false);
+  const [picker, setPicker] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    const value = code.trim();
+    if (!value) {
+      toast.error("الرجاء إدخال الكود أولاً");
+      return;
+    }
+    setChecking(true);
+    try {
+      const entry = await getCode(value);
+      if (!entry) {
+        clearSession();
+        toast.error("الكود غير صحيح أو غير موجود");
+        return;
+      }
+      if (entry.expiresAt !== null && entry.expiresAt <= Date.now()) {
+        clearSession();
+        toast.error("انتهت صلاحية هذا الكود");
+        return;
+      }
+      saveSession({ code: entry.code, expiresAt: entry.expiresAt ?? null });
+      toast.success("تم التحقق من الكود بنجاح");
+      setPicker(true);
+    } catch {
+      toast.error("تعذّر التحقق من الكود، حاول مرة أخرى");
+    } finally {
+      setChecking(false);
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -70,13 +106,11 @@ function LoginPage() {
           </div>
 
           <button
-            onClick={() =>
-              code.trim()
-                ? toast.success("جاري التحقق من الكود...")
-                : toast.error("الرجاء إدخال الكود أولاً")
-            }
-            className="mt-6 h-13 w-full rounded-2xl bg-foreground font-display text-sm font-bold tracking-wide text-background transition-transform active:scale-[0.98]"
+            onClick={() => void handleLogin()}
+            disabled={checking}
+            className="mt-6 flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-foreground font-display text-sm font-bold tracking-wide text-background transition-transform active:scale-[0.98] disabled:opacity-60"
           >
+            {checking ? <Loader2 className="size-4 animate-spin" /> : null}
             تسجيل الدخول
           </button>
 
@@ -102,6 +136,48 @@ function LoginPage() {
           DARK VIP © {new Date().getFullYear()}
         </p>
       </main>
+
+      {picker ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 px-6 backdrop-blur-md">
+          <div className="surface-card animate-rise relative w-full max-w-sm rounded-3xl p-6 text-center">
+            <button
+              onClick={() => setPicker(false)}
+              aria-label="إغلاق"
+              className="absolute left-4 top-4 flex size-8 items-center justify-center rounded-full border border-border text-muted-foreground"
+            >
+              <X className="size-4" />
+            </button>
+            <p className="font-display text-[10px] tracking-[0.4em] text-primary">
+              ACCESS GRANTED
+            </p>
+            <h3 className="mt-2 font-display text-lg font-extrabold text-foreground">
+              اختر اللعبة
+            </h3>
+            <div className="mt-5 flex items-center justify-center gap-3">
+              <button
+                onClick={() => void navigate({ to: "/aviator" })}
+                className="group relative h-[100px] w-[150px] overflow-hidden rounded-[15px] border border-border"
+              >
+                <img src={gameCrash} alt="Aviator" className="size-full object-cover" />
+                <span className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                <span className="absolute inset-x-0 bottom-1.5 font-display text-[11px] font-bold text-foreground">
+                  Aviator
+                </span>
+              </button>
+              <button
+                onClick={() => void navigate({ to: "/apple" })}
+                className="group relative h-[100px] w-[150px] overflow-hidden rounded-[15px] border border-primary/50"
+              >
+                <img src={gameApple} alt="Apple of fortune" className="size-full object-cover" />
+                <span className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                <span className="absolute inset-x-0 bottom-1.5 font-display text-[11px] font-bold text-primary">
+                  Apple of fortune
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

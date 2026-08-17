@@ -4,6 +4,7 @@ import { Play, RotateCcw } from "lucide-react";
 import { TopBar } from "@/components/dark-vip/TopBar";
 import { BrandName } from "@/components/dark-vip/BrandName";
 import { LiveWins } from "@/components/dark-vip/LiveWins";
+import { CodeTimer, useCodeGuard } from "@/components/dark-vip/CodeTimer";
 import logo from "@/assets/brand-logo.jpg";
 
 export const Route = createFileRoute("/aviator")({
@@ -24,41 +25,82 @@ export const Route = createFileRoute("/aviator")({
   component: AviatorPage,
 });
 
+const R = 15; // dot radius (30px circle)
+const GAP = 10; // gap from box edges
+
+type Pt = { x: number; y: number };
+
+function bezier(p0: Pt, c1: Pt, c2: Pt, p3: Pt, t: number): Pt {
+  const u = 1 - t;
+  return {
+    x: u ** 3 * p0.x + 3 * u * u * t * c1.x + 3 * u * t * t * c2.x + t ** 3 * p3.x,
+    y: u ** 3 * p0.y + 3 * u * u * t * c1.y + 3 * u * t * t * c2.y + t ** 3 * p3.y,
+  };
+}
+
 function AviatorPage() {
-  const [round, setRound] = useState(0);
+  const { session, ready } = useCodeGuard();
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ w: 400, h: 280 });
+  const [progress, setProgress] = useState(0);
   const [flying, setFlying] = useState(false);
   const [odd, setOdd] = useState(1);
   const [target, setTarget] = useState(1);
 
   useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const measure = () =>
+      setSize({ w: el.clientWidth, h: el.clientHeight });
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ready]);
+
+  useEffect(() => {
     if (!flying) return;
-    const start = Date.now();
+    const start = performance.now();
     const duration = 1000;
-    const id = setInterval(() => {
-      const t = Math.min((Date.now() - start) / duration, 1);
+    let raf = 0;
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - t, 2);
+      setProgress(eased);
       setOdd(1 + (target - 1) * eased);
-      if (t >= 1) clearInterval(id);
-    }, 30);
-    return () => clearInterval(id);
-  }, [flying, round, target]);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [flying, target]);
 
   const startRound = () => {
     setTarget(1 + Math.random() * 6);
     setOdd(1);
-    setRound((r) => r + 1);
-    setFlying(true);
+    setProgress(0);
+    setFlying(false);
+    requestAnimationFrame(() => setFlying(true));
   };
 
   const resetRound = () => {
     setFlying(false);
+    setProgress(0);
     setOdd(1);
   };
 
+  if (!ready || !session) return null;
+
+  const { w, h } = size;
+  const p0: Pt = { x: GAP + R, y: h - GAP - R };
+  const c1: Pt = { x: w * 0.38, y: h - GAP - R };
+  const c2: Pt = { x: w * 0.7, y: h * 0.7 };
+  const p3: Pt = { x: w - GAP - R, y: GAP + R };
+  const d = `M ${p0.x} ${p0.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${p3.x} ${p3.y}`;
+  const dot = bezier(p0, c1, c2, p3, progress);
 
   return (
     <div className="min-h-screen">
-      <TopBar backTo="/terms" usersOnline={4821} />
+      <TopBar backTo="/login" usersOnline={4821} />
 
       <main className="mx-auto w-full max-w-xl px-5 pb-16">
         <section className="mt-6 flex flex-col items-center">
@@ -75,8 +117,13 @@ function AviatorPage() {
           </p>
         </section>
 
-        {/* Game canvas */}
-        <section className="relative mt-6 h-[280px] overflow-hidden rounded-3xl border border-border bg-[#12121a] shadow-[var(--shadow-card)]">
+        <CodeTimer session={session} />
+
+        {/* Game box */}
+        <section
+          ref={boxRef}
+          className="relative mt-5 h-[280px] overflow-hidden rounded-3xl border border-border bg-[#12121a]/60 shadow-[var(--shadow-card)] backdrop-blur-md"
+        >
           {/* stars */}
           <div className="absolute inset-0 opacity-70">
             {STARS.map((s, i) => (
@@ -107,38 +154,42 @@ function AviatorPage() {
             />
           </svg>
 
-          {/* trail + dot */}
+          {/* trail + dot — both driven by the same progress value */}
           <svg
-            key={flying ? `run-${round}` : "idle"}
-            viewBox="0 0 400 280"
-            preserveAspectRatio="none"
-            className={`absolute inset-0 size-full ${flying ? "" : "opacity-0"}`}
+            viewBox={`0 0 ${w} ${h}`}
+            width={w}
+            height={h}
+            className={`absolute inset-0 ${flying || progress > 0 ? "" : "opacity-0"}`}
           >
             <defs>
               <linearGradient id="trailGrad" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0%" stopColor="rgba(255,110,20,0.15)" />
-                <stop offset="55%" stopColor="rgba(255,150,30,0.75)" />
+                <stop offset="0%" stopColor="rgba(255,110,20,0.2)" />
+                <stop offset="55%" stopColor="rgba(255,150,30,0.8)" />
                 <stop offset="100%" stopColor="rgba(255,205,90,1)" />
               </linearGradient>
             </defs>
             <path
-              d="M0 280 C 130 274, 265 215, 400 30"
+              d={d}
+              pathLength={1}
               fill="none"
               stroke="url(#trailGrad)"
               strokeWidth="4"
               strokeLinecap="round"
-              className={flying ? "animate-trail" : ""}
+              strokeDasharray="1"
+              strokeDashoffset={1 - progress}
             />
             <circle
-              r="15"
+              cx={dot.x}
+              cy={dot.y}
+              r={R}
               fill="#f5c451"
-              className={flying ? "animate-fly-dot" : ""}
-              style={{ offsetPath: 'path("M0 280 C 130 274, 265 215, 400 30")' }}
+              stroke="rgba(255,255,255,0.5)"
+              strokeWidth="1.5"
             />
           </svg>
 
           {/* multiplier */}
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <span
               className={`font-display text-5xl font-extrabold tabular-nums ${
                 flying ? "text-foreground" : "text-foreground/60"
