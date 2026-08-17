@@ -171,7 +171,43 @@ function TermsPage() {
   const [depositShot, setDepositShot] = useState<string | null>(null);
   const [idShot, setIdShot] = useState<string | null>(null);
   const [userId, setUserId] = useState("");
-  const ready = userId.trim().length > 0 && !!depositShot && !!idShot;
+  const [telegramUser, setTelegramUser] = useState("");
+  const [dialog, setDialog] = useState<"closed" | "loading" | "done">("closed");
+  const sendToBot = useServerFn(submitRegistration);
+  const ready =
+    userId.trim().length > 0 &&
+    telegramUser.trim().length > 0 &&
+    !!depositShot &&
+    !!idShot;
+
+  const handleSubmit = async () => {
+    if (!ready) {
+      toast.error("الرجاء إكمال الـ ID ويوزر التلجرام ورفع الصورتين");
+      return;
+    }
+    setDialog("loading");
+    const started = Date.now();
+    try {
+      await sendToBot({
+        data: {
+          userId: userId.trim(),
+          telegramUser: telegramUser.trim().startsWith("@")
+            ? telegramUser.trim()
+            : `@${telegramUser.trim()}`,
+          depositShot: depositShot!,
+          idShot: idShot!,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("تعذّر إرسال البيانات، حاول مرة أخرى");
+      setDialog("closed");
+      return;
+    }
+    const wait = Math.max(0, 5000 - (Date.now() - started));
+    window.setTimeout(() => setDialog("done"), wait);
+  };
+
 
   const copyPromo = async () => {
     try {
