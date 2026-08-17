@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import logo from "@/assets/dark-vip-logo.png";
+import logo from "@/assets/brand-logo.jpg";
 import { BrandName } from "@/components/dark-vip/BrandName";
 
 export const Route = createFileRoute("/")({

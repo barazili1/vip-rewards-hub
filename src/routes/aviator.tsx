@@ -4,7 +4,7 @@ import { Play, RotateCcw } from "lucide-react";
 import { TopBar } from "@/components/dark-vip/TopBar";
 import { BrandName } from "@/components/dark-vip/BrandName";
 import { LiveWins } from "@/components/dark-vip/LiveWins";
-import logo from "@/assets/dark-vip-logo.png";
+import logo from "@/assets/brand-logo.jpg";
 
 export const Route = createFileRoute("/aviator")({
   head: () => ({
