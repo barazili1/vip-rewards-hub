@@ -130,8 +130,12 @@ function UploadBox({
         className="sr-only"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) onChange(URL.createObjectURL(file));
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => onChange(String(reader.result));
+          reader.readAsDataURL(file);
         }}
+
       />
       <label
         htmlFor={inputId}
