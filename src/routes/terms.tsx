@@ -234,24 +234,24 @@ function TermsPage() {
             >
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { symbol: "$", value: "$6.00", unit: "USD" },
-                  { symbol: "E", value: "300", unit: "جنيه" },
+                  { symbol: "$", value: "6.00", unit: "USD", note: "دولار" },
+                  { symbol: "E£", value: "300", unit: "EGP", note: "جنيه" },
                 ].map((item) => (
                   <div
                     key={item.unit}
-                    className="relative overflow-hidden rounded-2xl border border-border bg-secondary/30 px-4 py-4"
+                    className="relative overflow-hidden rounded-[15px] border border-primary/25 bg-gradient-to-b from-primary/10 to-transparent p-3 text-center"
                   >
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute -top-2 right-2 font-display text-5xl font-extrabold text-foreground/10"
-                    >
+                    <span className="mx-auto flex size-8 items-center justify-center rounded-full border border-primary/40 bg-primary/15 font-display text-xs font-extrabold text-primary">
                       {item.symbol}
                     </span>
-                    <p className="font-display text-[10px] font-bold tracking-[0.25em] text-muted-foreground">
+                    <p className="mt-2 font-display text-2xl font-extrabold leading-none text-foreground">
+                      {item.value}
+                    </p>
+                    <p className="mt-1.5 font-display text-[9px] font-bold tracking-[0.25em] text-primary/80">
                       {item.unit}
                     </p>
-                    <p className="mt-1 font-display text-2xl font-extrabold text-foreground">
-                      {item.value}
+                    <p className="text-[10px] text-muted-foreground">
+                      {item.note}
                     </p>
                   </div>
                 ))}
@@ -262,9 +262,9 @@ function TermsPage() {
               image={stepId}
               badge="VERIFY"
               title="إدخال الـ ID الخاص بك"
-              description="أدخل رقم حسابك في MELBET لتأكيد إكمال الشروط."
+              description="أدخل رقم حسابك في MELBET وارفع صور التأكيد."
             >
-              <div className="flex items-center gap-3 rounded-2xl border border-input bg-secondary/40 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
+              <div className="flex items-center gap-3 rounded-[15px] border border-input bg-secondary/40 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
                 <BadgeCheck className="size-4 text-primary" />
                 <input
                   value={userId}
@@ -274,7 +274,21 @@ function TermsPage() {
                   className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                 />
               </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <UploadBox
+                  label="صورة الإيداع"
+                  value={depositShot}
+                  onChange={setDepositShot}
+                />
+                <UploadBox
+                  label="صورة الـ ID"
+                  value={idShot}
+                  onChange={setIdShot}
+                />
+              </div>
             </StepCard>
+
           </ol>
         </div>
 
