@@ -1,10 +1,14 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { KeyRound, LifeBuoy, UserPlus } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { KeyRound, LifeBuoy, Loader2, UserPlus, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import logo from "@/assets/brand-logo.jpg";
+import gameApple from "@/assets/game-apple.jpg";
+import gameCrash from "@/assets/game-crash.jpg";
 import { BrandName } from "@/components/dark-vip/BrandName";
 import { TopBar } from "@/components/dark-vip/TopBar";
+import { getCode } from "@/lib/firebase";
+import { clearSession, saveSession } from "@/lib/session";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
