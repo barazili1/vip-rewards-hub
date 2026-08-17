@@ -445,11 +445,7 @@ function TermsPage() {
 
         <div className="px-5">
           <button
-            onClick={() =>
-              userId.trim()
-                ? toast.success("تم إرسال بياناتك للمراجعة")
-                : toast.error("الرجاء إدخال الـ ID الخاص بك")
-            }
+            onClick={handleSubmit}
             className="mt-8 h-14 w-full rounded-[15px] bg-foreground font-display text-base font-extrabold text-background shadow-lg transition-transform active:scale-[0.98]"
           >
             إرسال وإكمال التسجيل
@@ -459,8 +455,69 @@ function TermsPage() {
             سيتم تفعيل عضويتك بعد التحقق من إكمال جميع الشروط.
           </p>
         </div>
-
       </main>
+
+      {dialog !== "closed" ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 px-6 backdrop-blur-md">
+          <div className="surface-card animate-rise w-full max-w-sm overflow-hidden rounded-3xl p-7 text-center">
+            {dialog === "loading" ? (
+              <>
+                <div className="relative mx-auto flex size-20 items-center justify-center">
+                  <span className="absolute inset-0 rounded-full border border-primary/30" />
+                  <Loader2 className="size-10 animate-spin text-primary" />
+                </div>
+                <p className="mt-6 font-display text-[10px] tracking-[0.4em] text-primary">
+                  PROCESSING
+                </p>
+                <h3 className="mt-2 font-display text-lg font-extrabold text-foreground">
+                  جاري إرسال بياناتك...
+                </h3>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  الرجاء الانتظار بينما نتحقق من الشروط
+                </p>
+                <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-secondary/50">
+                  <div className="bg-gold h-full w-1/3 animate-[shine_1.4s_ease-in-out_infinite]" />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mx-auto flex size-16 items-center justify-center rounded-full border border-primary/40 bg-primary/15">
+                  <Check className="size-8 text-primary" />
+                </div>
+                <p className="mt-5 font-display text-[10px] tracking-[0.4em] text-primary">
+                  VERIFIED
+                </p>
+                <h3 className="mt-2 font-display text-lg font-extrabold text-foreground">
+                  تم إرسال طلبك بنجاح
+                </h3>
+                <p className="mt-4 text-[11px] text-muted-foreground">
+                  يوزر التلجرام الخاص بك
+                </p>
+                <p className="mt-1 font-display text-base font-extrabold text-foreground">
+                  {telegramUser.trim().startsWith("@")
+                    ? telegramUser.trim()
+                    : `@${telegramUser.trim()}`}
+                </p>
+                <a
+                  href="https://t.me/+MhA9HqqjqXYyMGY0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 flex h-13 w-full items-center justify-center rounded-[15px] bg-foreground font-display text-sm font-extrabold text-background shadow-lg transition-transform active:scale-[0.98]"
+                >
+                  المتابعه لاخذ الكود
+                </a>
+                <button
+                  onClick={() => setDialog("closed")}
+                  className="mt-3 font-display text-[11px] tracking-[0.2em] text-muted-foreground"
+                >
+                  CLOSE
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
+
