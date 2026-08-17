@@ -61,15 +61,7 @@ function StepCard({
   children?: ReactNode;
 }) {
   return (
-    <li className="animate-rise relative pl-12">
-      {/* timeline node */}
-      <span
-        aria-hidden
-        className="absolute left-0 top-6 flex size-10 items-center justify-center rounded-full border border-primary/30 bg-card/80 backdrop-blur"
-      >
-        <Icon className="size-4 text-primary" />
-      </span>
-
+    <li className="animate-rise relative">
       <div className="surface-card relative overflow-hidden rounded-3xl p-5">
         <div
           aria-hidden
@@ -163,12 +155,6 @@ function TermsPage() {
         </section>
 
         <div className="relative mt-6 px-5">
-          {/* vertical rail */}
-          <span
-            aria-hidden
-            className="absolute bottom-10 left-[2.25rem] top-6 w-px bg-gradient-to-b from-primary/70 via-primary/30 to-transparent"
-          />
-
           <ol className="space-y-5">
             <StepCard
               icon={Smartphone}
@@ -180,7 +166,7 @@ function TermsPage() {
             >
               <button
                 onClick={() => toast("جاري تحويلك إلى صفحة التحميل...")}
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-foreground font-display text-sm font-bold text-background shadow-lg transition-transform active:scale-[0.98]"
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-[15px] bg-foreground font-display text-sm font-bold text-background shadow-lg transition-transform active:scale-[0.98]"
               >
                 <Download className="size-4" />
                 تحميل التطبيق
@@ -197,7 +183,7 @@ function TermsPage() {
             >
               <button
                 onClick={() => toast("جاري تحويلك إلى قناة التلجرام...")}
-                className="bg-gold flex h-12 w-full items-center justify-center gap-2 rounded-2xl font-display text-sm font-bold text-primary-foreground transition-transform active:scale-[0.98]"
+                className="bg-gold flex h-12 w-full items-center justify-center gap-2 rounded-[15px] font-display text-sm font-bold text-primary-foreground transition-transform active:scale-[0.98]"
               >
                 <Send className="size-4" />
                 انضمام الآن
@@ -239,7 +225,7 @@ function TermsPage() {
 
               <button
                 onClick={() => toast("جاري تحويلك إلى صفحة التسجيل...")}
-                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-foreground font-display text-sm font-bold text-background shadow-lg transition-transform active:scale-[0.98]"
+                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-[15px] bg-foreground font-display text-sm font-bold text-background shadow-lg transition-transform active:scale-[0.98]"
               >
                 <UserRound className="size-4" />
                 التسجيل في منصة MELBET
@@ -307,7 +293,7 @@ function TermsPage() {
                 ? toast.success("تم إرسال بياناتك للمراجعة")
                 : toast.error("الرجاء إدخال الـ ID الخاص بك")
             }
-            className="bg-gold shine mt-8 h-14 w-full rounded-2xl font-display text-base font-extrabold text-primary-foreground transition-transform active:scale-[0.98]"
+            className="bg-gold shine mt-8 h-14 w-full rounded-[15px] font-display text-base font-extrabold text-primary-foreground transition-transform active:scale-[0.98]"
           >
             إرسال وإكمال التسجيل
           </button>
