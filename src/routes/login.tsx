@@ -1,5 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { KeyRound, LifeBuoy, Loader2, UserPlus, X } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  KeyRound,
+  LifeBuoy,
+  Loader2,
+  UserPlus,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import logo from "@/assets/brand-logo.jpg";
@@ -30,6 +38,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const [code, setCode] = useState("");
+  const [showCode, setShowCode] = useState(false);
   const [checking, setChecking] = useState(false);
   const [picker, setPicker] = useState(false);
   const navigate = useNavigate();
@@ -94,14 +103,28 @@ function LoginPage() {
               كود الدخول
             </label>
             <div className="flex items-center gap-3 rounded-2xl border border-input bg-secondary/40 px-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-ring">
-              <KeyRound className="size-4 text-primary" />
+              <KeyRound className="size-4 shrink-0 text-primary" />
               <input
                 id="code"
+                type={showCode ? "text" : "password"}
+                autoComplete="off"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="أدخل الكود الخاص بك"
-                className="h-13 w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+                className="h-13 w-full bg-transparent text-sm tracking-widest text-foreground outline-none placeholder:tracking-normal placeholder:text-muted-foreground"
               />
+              <button
+                type="button"
+                onClick={() => setShowCode((v) => !v)}
+                aria-label={showCode ? "إخفاء الكود" : "إظهار الكود"}
+                className="shrink-0 text-muted-foreground transition-colors hover:text-primary"
+              >
+                {showCode ? (
+                  <EyeOff className="size-4" />
+                ) : (
+                  <Eye className="size-4" />
+                )}
+              </button>
             </div>
           </div>
 
@@ -115,13 +138,15 @@ function LoginPage() {
           </button>
 
           <div className="mt-4 grid grid-cols-2 gap-3">
-            <button
-              onClick={() => toast("تواصل معنا عبر قناة الدعم")}
+            <a
+              href="https://t.me/B2BMEL"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex h-12 items-center justify-center gap-2 rounded-2xl border border-border bg-secondary/40 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
             >
               <LifeBuoy className="size-4 text-primary" />
               تحتاج لمساعدة
-            </button>
+            </a>
             <Link
               to="/terms"
               className="flex h-12 items-center justify-center gap-2 rounded-2xl border border-primary/50 bg-primary/10 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
