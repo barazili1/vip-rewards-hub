@@ -55,7 +55,7 @@ export function Particles({ count = 100 }: { count?: number }) {
           const dy = p.y - q.y;
           const dist = Math.hypot(dx, dy);
           if (dist < linkDist) {
-            ctx.strokeStyle = `rgba(245, 197, 66, ${0.18 * (1 - dist / linkDist)})`;
+            ctx.strokeStyle = `rgba(245, 197, 66, ${0.12 * (1 - dist / linkDist)})`;
             ctx.lineWidth = 0.6;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
@@ -66,15 +66,7 @@ export function Particles({ count = 100 }: { count?: number }) {
       }
 
       for (const p of particles) {
-        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 5);
-        g.addColorStop(0, "rgba(255, 214, 92, 0.9)");
-        g.addColorStop(1, "rgba(255, 200, 60, 0)");
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 5, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "rgba(255, 228, 140, 0.95)";
+        ctx.fillStyle = "rgba(226, 186, 86, 0.5)";
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
