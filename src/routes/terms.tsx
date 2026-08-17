@@ -1,6 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { submitRegistration } from "@/lib/telegram.functions";
+import {
+  submitRegistration,
+  verifyTelegramUser,
+} from "@/lib/telegram.functions";
 import { ADMIN_ID, grantAdmin } from "@/lib/session";
 import {
   BadgeCheck,
@@ -179,28 +182,41 @@ function TermsPage() {
   const [dialog, setDialog] = useState<"closed" | "loading" | "done">("closed");
   const navigate = useNavigate();
   const sendToBot = useServerFn(submitRegistration);
-  const ready =
-    userId.trim().length > 0 &&
-    telegramUser.trim().length > 0 &&
-    !!depositShot &&
-    !!idShot;
+  const checkTelegram = useServerFn(verifyTelegramUser);
+  const idDigits = userId.replace(/\D/g, "");
+  const idValid = idDigits.length >= 10 && idDigits.length <= 14;
+  const handle = telegramUser.trim().replace(/^@/, "");
+  const handleValid = /^[A-Za-z0-9_]{5,32}$/.test(handle);
+  const ready = idValid && handleValid && !!depositShot && !!idShot;
 
   const handleSubmit = async () => {
-    if (!ready) {
-      toast.error("الرجاء إكمال الـ ID ويوزر التلجرام ورفع الصورتين");
+    if (!idValid) {
+      toast.error("الـ ID يجب أن يكون من 10 إلى 14 رقم");
+      return;
+    }
+    if (!handleValid) {
+      toast.error("يوزر التلجرام غير صحيح");
+      return;
+    }
+    if (!depositShot || !idShot) {
+      toast.error("الرجاء رفع صورة الإيداع وصورة الـ ID");
       return;
     }
     setDialog("loading");
     const started = Date.now();
     try {
+      const check = await checkTelegram({ data: { username: handle } });
+      if (!check.exists) {
+        toast.error("يوزر التلجرام غير موجود، تأكد من الاسم");
+        setDialog("closed");
+        return;
+      }
       await sendToBot({
         data: {
-          userId: userId.trim(),
-          telegramUser: telegramUser.trim().startsWith("@")
-            ? telegramUser.trim()
-            : `@${telegramUser.trim()}`,
-          depositShot: depositShot!,
-          idShot: idShot!,
+          userId: idDigits,
+          telegramUser: `@${handle}`,
+          depositShot,
+          idShot,
         },
       });
     } catch (err) {
@@ -212,6 +228,7 @@ function TermsPage() {
     const wait = Math.max(0, 5000 - (Date.now() - started));
     window.setTimeout(() => setDialog("done"), wait);
   };
+
 
 
   const copyPromo = async () => {

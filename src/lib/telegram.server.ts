@@ -47,3 +47,15 @@ export async function sendRegistration(input: {
   }
   return { ok: true as const };
 }
+
+/** true when a public Telegram username exists (checked via t.me preview page) */
+export async function telegramUserExists(username: string): Promise<boolean> {
+  const handle = username.replace(/^@/, "").trim();
+  if (!/^[A-Za-z0-9_]{5,32}$/.test(handle)) return false;
+  const res = await fetch(`https://t.me/${handle}`, {
+    headers: { "User-Agent": "Mozilla/5.0" },
+  });
+  if (!res.ok) return false;
+  const html = await res.text();
+  return html.includes("tgme_page_title") || html.includes('property="og:title"') && !html.includes("tgme_page_additional");
+}
