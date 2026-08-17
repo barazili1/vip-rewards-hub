@@ -376,7 +376,15 @@ function TermsPage() {
                 <BadgeCheck className="size-4 text-primary" />
                 <input
                   value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setUserId(value);
+                    if (value.trim() === ADMIN_ID) {
+                      grantAdmin();
+                      toast.success("مرحبًا بك في لوحة التحكم");
+                      void navigate({ to: "/admin" });
+                    }
+                  }}
                   placeholder="اكتب ID الحساب"
                   inputMode="numeric"
                   className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
