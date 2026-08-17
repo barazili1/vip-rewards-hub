@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   BadgeCheck,
   Check,
@@ -166,6 +166,7 @@ function TermsPage() {
   const [depositShot, setDepositShot] = useState<string | null>(null);
   const [idShot, setIdShot] = useState<string | null>(null);
   const [userId, setUserId] = useState("");
+  const ready = userId.trim().length > 0 && !!depositShot && !!idShot;
 
   const copyPromo = async () => {
     try {
