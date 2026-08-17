@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { BrandName } from "./BrandName";
 
 export function TopBar({
@@ -19,7 +19,7 @@ export function TopBar({
               aria-label="رجوع"
               className="flex size-9 items-center justify-center rounded-full border border-border text-primary transition-colors hover:bg-secondary"
             >
-              <ArrowRight className="size-4" />
+              <ArrowLeft className="size-4" />
             </Link>
           ) : null}
           <BrandName className="text-base" />
