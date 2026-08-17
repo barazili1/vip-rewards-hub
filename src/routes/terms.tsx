@@ -18,7 +18,6 @@ import melbetLogo from "@/assets/melbet-logo.jpg";
 import gameApple from "@/assets/game-apple.jpg";
 import gameCrash from "@/assets/game-crash.jpg";
 import stepTelegram from "@/assets/step-telegram.jpg";
-import stepPromo from "@/assets/step-promo.jpg";
 import stepDeposit from "@/assets/step-deposit.jpg";
 import stepId from "@/assets/step-id.jpg";
 
